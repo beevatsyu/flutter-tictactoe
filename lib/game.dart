@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tictactoe/result.dart';
-import 'package:flutter_tictactoe/score.dart';
-
+import 'result.dart';
+import 'score.dart';
 import 'cell.dart';
 
 class Game extends StatefulWidget {
   final ScoreCtrl scoreCtrl;
   final List<CellCtrl> cellCtrls;
   final ResultCtrl resultCtrl;
+  final GameCtrl gameCtrl;
 
-  Game(this.scoreCtrl, this.cellCtrls, this.resultCtrl);
+  Game({this.scoreCtrl, this.cellCtrls, this.resultCtrl, this.gameCtrl});
 
   @override
-  _GameState createState() => _GameState();
+  _GameState createState() => _GameState(gameCtrl);
 }
 
 class _GameState extends State<Game> {
@@ -30,12 +30,13 @@ class _GameState extends State<Game> {
     "X": Set<int>(),
     "O": Set<int>(),
   };
-  final scoreMap = {
-    "X": 0,
-    "O": 0,
-  };
 
   int markCount = 0;
+
+  _GameState(GameCtrl ctrl) {
+    ctrl.reset = _resetGame;
+    ctrl.end = _endGame;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +54,9 @@ class _GameState extends State<Game> {
               ...List<Cell>.generate(
                 3,
                 (j) => Cell(
-                    controller: widget.cellCtrls[i * 3 + j],
                     size: 100, //TODO: use dynamic size
+                    position: i * 3 + j,
+                    controller: widget.cellCtrls[i * 3 + j],
                     onMarked: (String _mark) {
                       _checkGameStatus(_mark, i * 3 + j);
                     }),
@@ -88,13 +90,31 @@ class _GameState extends State<Game> {
   }
 
   void _endGame(String message) {
+    // Freeze unmarked cells
+    widget.cellCtrls.forEach((ctrl) {
+      if (!ctrl.marked) {
+        ctrl.freeze();
+      }
+    });
+    // Display result: win/tie
+    widget.resultCtrl.setResult(message);
+  }
+
+  void _resetGame() {
+    // Reset all cells
+    widget.cellCtrls.forEach((ctrl) {
+      ctrl.reset();
+      ctrl.marked = false;
+    });
+    // Reset game progress
     markMap.forEach((key, value) {
       value.clear();
     });
     markCount = 0;
-    widget.cellCtrls.forEach((ctrl) {
-      if (!ctrl.marked) ctrl.freeze();
-    });
-    widget.resultCtrl.setResult(message);
   }
+}
+
+class GameCtrl {
+  Function() reset;
+  Function(String) end;
 }

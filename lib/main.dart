@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tictactoe/game.dart';
-import 'package:flutter_tictactoe/result.dart';
-
+import 'package:flutter/services.dart';
+import 'game.dart';
+import 'result.dart';
 import 'cell.dart';
 import 'score.dart';
 
@@ -12,6 +12,10 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Flutter Tic Tac Toe',
       theme: ThemeData(
@@ -26,6 +30,7 @@ class MyApp extends StatelessWidget {
 class TicTacToe extends StatelessWidget {
   final cellCtrls = List<CellCtrl>.generate(9, (_) => CellCtrl());
   final scoreCtrl = ScoreCtrl();
+  final gameCtrl = GameCtrl();
   final resultCtrl = ResultCtrl();
 
   @override
@@ -36,8 +41,17 @@ class TicTacToe extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Score(scoreCtrl),
-            Game(scoreCtrl, cellCtrls, resultCtrl),
-            Result(cellCtrls, resultCtrl),
+            Game(
+              scoreCtrl: scoreCtrl,
+              gameCtrl: gameCtrl,
+              cellCtrls: cellCtrls,
+              resultCtrl: resultCtrl,
+            ),
+            Result(
+              cellCtrls: cellCtrls,
+              resultCtrl: resultCtrl,
+              gameCtrl: gameCtrl,
+            ),
           ],
         ),
       ),

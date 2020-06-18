@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'game.dart';
+import 'cell.dart';
 
 class Result extends StatefulWidget {
-  final cellCtrls;
-  final resultCtrl;
+  final List<CellCtrl> cellCtrls;
+  final ResultCtrl resultCtrl;
+  final GameCtrl gameCtrl;
 
-  Result(this.cellCtrls, this.resultCtrl);
+  Result({this.cellCtrls, this.resultCtrl, this.gameCtrl});
 
   @override
   _ResultState createState() => _ResultState(resultCtrl);
@@ -21,12 +24,19 @@ class _ResultState extends State<Result> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(result),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: Text(
+            result,
+            style: TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
+        ),
         RaisedButton.icon(
           onPressed: () {
-            widget.cellCtrls.forEach((controler) {
-              controler.reset();
-            });
+            setState(() => result = "");
+            widget.gameCtrl.reset();
           },
           icon: Icon(Icons.replay),
           label: Text("Replay"),
