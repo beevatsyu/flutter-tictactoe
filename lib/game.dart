@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'result.dart';
 import 'score.dart';
@@ -40,30 +42,37 @@ class _GameState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-    return Table(
-      defaultColumnWidth: IntrinsicColumnWidth(),
-      border: TableBorder(
-        horizontalInside: BorderSide(),
-        verticalInside: BorderSide(),
-      ),
-      children: [
-        ...List<TableRow>.generate(
-          3,
-          (i) => TableRow(
-            children: [
-              ...List<Cell>.generate(
-                3,
-                (j) => Cell(
-                    size: 100, //TODO: use dynamic size
-                    controller: widget.cellCtrls[i * 3 + j],
-                    onMarked: (String _mark) {
-                      _checkGameStatus(_mark, i * 3 + j);
-                    }),
-              ),
-            ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cellSize = min(constraints.maxHeight, constraints.maxWidth) * 0.25;
+        return Table(
+          defaultColumnWidth: IntrinsicColumnWidth(),
+          border: TableBorder(
+            horizontalInside: BorderSide(),
+            verticalInside: BorderSide(),
           ),
-        ),
-      ],
+          children: [
+            ...List<TableRow>.generate(
+              3,
+              (row) => TableRow(
+                children: [
+                  ...List<Cell>.generate(
+                    3,
+                    (col) {
+                      var index = row * 3 + col;
+                      return Cell(
+                        size: cellSize,
+                        controller: widget.cellCtrls[index],
+                        onMarked: (mark) => _checkGameStatus(mark, index),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -74,9 +83,7 @@ class _GameState extends State<Game> {
       for (var winSet in winSets) {
         for (var mark in markMap.keys) {
           if (markMap[mark].containsAll(winSet)) {
-            winSet.forEach((index) {
-              widget.cellCtrls[index].highlight();
-            });
+            winSet.forEach((index) => widget.cellCtrls[index].highlight());
             widget.scoreCtrl.update(mark);
             _endGame("The winner is: $mark");
             return;

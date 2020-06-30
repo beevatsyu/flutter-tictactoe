@@ -52,16 +52,17 @@ class _CellState extends State<Cell> {
           }
         },
         child: marked
-            ? Center(
+            ? FittedBox(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
                 child: Text(
                   mark,
                   style: TextStyle(
-                    fontSize: 50,
-                    fontWeight: highlighted ? FontWeight.bold : null,
+                    color: highlighted ? Colors.red : null,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              )
+              ),
+            )
             : null,
       ),
     );
