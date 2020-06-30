@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class TicTacToe extends StatelessWidget {
-  final cellCtrls = List<CellCtrl>.generate(9, (_) => CellCtrl());
+  final cellCtrls = List<CellCtrl>.generate(9, (i) => CellCtrl(i));
   final scoreCtrl = ScoreCtrl();
   final gameCtrl = GameCtrl();
   final resultCtrl = ResultCtrl();

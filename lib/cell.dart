@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 class Cell extends StatefulWidget {
   final double size;
-  final int position;
   final Function(String) onMarked;
   final CellCtrl controller;
 
   Cell({
     this.size,
-    this.position,
     this.onMarked,
     this.controller,
   });
@@ -30,7 +28,6 @@ class _CellState extends State<Cell> {
           highlighted = false;
         });
     controller.freeze = () {
-      debugPrint("Cell ${widget.position}: frozen");
       frozen = true;
     };
     controller.highlight = () => setState(() {
@@ -40,14 +37,12 @@ class _CellState extends State<Cell> {
 
   @override
   Widget build(BuildContext context) {
-    widget.controller.index = widget.position;
     return Container(
       width: widget.size,
       height: widget.size,
       child: GestureDetector(
         onTap: () {
           if (!marked && !frozen) {
-            debugPrint("Cell ${widget.position}: onTap()");
             setState(() {
               marked = true;
               mark = (mark == "X") ? "O" : "X";
@@ -74,9 +69,11 @@ class _CellState extends State<Cell> {
 }
 
 class CellCtrl {
-  int index;
+  final int index;
   bool marked = false;
   void Function() reset;
   void Function() freeze;
   void Function() highlight;
+
+  CellCtrl(this.index);
 }

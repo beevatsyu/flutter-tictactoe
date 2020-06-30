@@ -55,7 +55,6 @@ class _GameState extends State<Game> {
                 3,
                 (j) => Cell(
                     size: 100, //TODO: use dynamic size
-                    position: i * 3 + j,
                     controller: widget.cellCtrls[i * 3 + j],
                     onMarked: (String _mark) {
                       _checkGameStatus(_mark, i * 3 + j);
@@ -72,20 +71,22 @@ class _GameState extends State<Game> {
     markCount++;
     markMap[_mark].add(index);
     if (markCount > 4) {
-      winSets.forEach((winSet) {
-        markMap.keys.forEach((mark) {
+      for (var winSet in winSets) {
+        for (var mark in markMap.keys) {
           if (markMap[mark].containsAll(winSet)) {
             winSet.forEach((index) {
               widget.cellCtrls[index].highlight();
             });
             widget.scoreCtrl.update(mark);
             _endGame("The winner is: $mark");
+            return;
           }
-        });
-      });
+        }
+      }
     }
     if (markCount == 9) {
       _endGame("It's a tie!");
+      return;
     }
   }
 
