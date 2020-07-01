@@ -14,7 +14,7 @@ class Result extends StatefulWidget {
 }
 
 class _ResultState extends State<Result> {
-  String result = "";
+  String result = "Next turn: ${CellCtrl.nextMark}";
 
   _ResultState(ResultCtrl ctrl) {
     ctrl.setResult = (result) => setState(() => this.result = result);
@@ -35,7 +35,6 @@ class _ResultState extends State<Result> {
         ),
         RaisedButton.icon(
           onPressed: () {
-            setState(() => result = "");
             widget.gameCtrl.reset();
           },
           icon: Icon(Icons.replay),

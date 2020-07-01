@@ -76,9 +76,14 @@ class _GameState extends State<Game> {
     );
   }
 
-  void _checkGameStatus(String _mark, int index) {
+  void _checkGameStatus(String currentMark, int cellIndex) {
+    // update the mark map
+    markMap[currentMark].add(cellIndex);
+    // update the status for next turn
+    debugPrint("Next turn: ${CellCtrl.nextMark}");
+    widget.resultCtrl.setResult("Next turn: ${CellCtrl.nextMark}");
+    // check for game-over
     markCount++;
-    markMap[_mark].add(index);
     if (markCount > 4) {
       for (var winSet in winSets) {
         for (var mark in markMap.keys) {
@@ -119,6 +124,8 @@ class _GameState extends State<Game> {
       value.clear();
     });
     markCount = 0;
+    // Reset status
+    widget.resultCtrl.setResult("Next turn: ${CellCtrl.nextMark}");
   }
 }
 

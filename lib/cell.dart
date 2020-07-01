@@ -45,9 +45,10 @@ class _CellState extends State<Cell> {
           if (!marked && !frozen) {
             setState(() {
               marked = true;
-              mark = (mark == "X") ? "O" : "X";
+              mark = flip(mark);
             });
             widget.controller.marked = true;
+            CellCtrl.nextMark = flip(mark);
             widget.onMarked(mark);
           }
         },
@@ -69,9 +70,12 @@ class _CellState extends State<Cell> {
   }
 }
 
+String flip(String mark) => (mark == "X") ? "O" : "X";
+
 class CellCtrl {
   final int index;
   bool marked = false;
+  static String nextMark = flip(_CellState.mark);
   void Function() reset;
   void Function() freeze;
   void Function() highlight;
