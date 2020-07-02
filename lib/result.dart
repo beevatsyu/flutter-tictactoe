@@ -3,11 +3,10 @@ import 'game.dart';
 import 'cell.dart';
 
 class Result extends StatefulWidget {
-  final List<CellCtrl> cellCtrls;
   final ResultCtrl resultCtrl;
   final GameCtrl gameCtrl;
 
-  Result({this.cellCtrls, this.resultCtrl, this.gameCtrl});
+  Result({this.resultCtrl, this.gameCtrl});
 
   @override
   _ResultState createState() => _ResultState(resultCtrl);

@@ -48,7 +48,6 @@ class TicTacToe extends StatelessWidget {
               resultCtrl: resultCtrl,
             ),
             Result(
-              cellCtrls: cellCtrls,
               resultCtrl: resultCtrl,
               gameCtrl: gameCtrl,
             ),
