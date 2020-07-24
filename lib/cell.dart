@@ -17,7 +17,7 @@ class Cell extends StatefulWidget {
 }
 
 class _CellState extends State<Cell> {
-  static String globalMark = "O";
+  static String globalMark = "X";
   String localMark;
   static final lock = Mutex();
   bool marked = false;
@@ -55,7 +55,7 @@ class _CellState extends State<Cell> {
                 globalMark = flip(globalMark);
               });
               widget.controller.marked = true;
-              CellCtrl.nextMark = flip(globalMark);
+              CellCtrl.nextMark = globalMark;
               widget.onMarked(globalMark);
             }
           } catch (e) {
@@ -87,7 +87,7 @@ String flip(String mark) => (mark == "X") ? "O" : "X";
 class CellCtrl {
   final int index;
   bool marked = false;
-  static String nextMark = flip(_CellState.globalMark);
+  static String nextMark = _CellState.globalMark;
   void Function() reset;
   void Function() freeze;
   void Function() highlight;
