@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sync/sync.dart';
 
 class Cell extends StatefulWidget {
   final double size;
@@ -16,7 +17,9 @@ class Cell extends StatefulWidget {
 }
 
 class _CellState extends State<Cell> {
-  static String mark = "O";
+  static String globalMark = "O";
+  String localMark;
+  static final lock = Mutex();
   bool marked = false;
   bool frozen = false;
   bool highlighted = false;
@@ -41,29 +44,38 @@ class _CellState extends State<Cell> {
       width: widget.size,
       height: widget.size,
       child: GestureDetector(
-        onTap: () {
-          if (!marked && !frozen) {
-            setState(() {
-              marked = true;
-              mark = flip(mark);
-            });
-            widget.controller.marked = true;
-            CellCtrl.nextMark = flip(mark);
-            widget.onMarked(mark);
+        onTap: () async {
+          await lock.acquire();
+          debugPrint(DateTime.now().toString());
+          try {
+            if (!marked && !frozen) {
+              setState(() {
+                marked = true;
+                localMark = globalMark;
+                globalMark = flip(globalMark);
+              });
+              widget.controller.marked = true;
+              CellCtrl.nextMark = flip(globalMark);
+              widget.onMarked(globalMark);
+            }
+          } catch (e) {
+            debugPrint(e);
+          } finally {
+            lock.release();
           }
         },
         child: marked
             ? FittedBox(
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  mark,
-                  style: TextStyle(
-                    color: highlighted ? Colors.red : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    localMark,
+                    style: TextStyle(
+                      color: highlighted ? Colors.red : null,
+                    ),
                   ),
                 ),
-              ),
-            )
+              )
             : null,
       ),
     );
@@ -75,7 +87,7 @@ String flip(String mark) => (mark == "X") ? "O" : "X";
 class CellCtrl {
   final int index;
   bool marked = false;
-  static String nextMark = flip(_CellState.mark);
+  static String nextMark = flip(_CellState.globalMark);
   void Function() reset;
   void Function() freeze;
   void Function() highlight;
