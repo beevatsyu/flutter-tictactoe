@@ -52,11 +52,11 @@ class _CellState extends State<Cell> {
               setState(() {
                 marked = true;
                 localMark = globalMark;
-                globalMark = flip(globalMark);
               });
+              globalMark = flip(globalMark);
               widget.controller.marked = true;
               CellCtrl.nextMark = globalMark;
-              widget.onMarked(globalMark);
+              widget.onMarked(localMark);
             }
           } catch (e) {
             debugPrint(e);
